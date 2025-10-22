@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub API App</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <h1>Moodify</h1>
+
+    <h2>Enter the mood/moods you are in</h2>
+
+    <form method="GET" action="get_mood">
+        <label>Please enter current mood, if you would like you can specify genre as well</label>
+        <input name="Mood">
+        <button type="submit">Enter</button>
+
+    </form>
+    
+</body>
+</html>
