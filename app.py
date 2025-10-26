@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request  # NOT the same as requests 
+from flask import Flask, render_template, request  # NOT the same as requests
 from gemini import get_songs
 
 app = Flask(__name__)
