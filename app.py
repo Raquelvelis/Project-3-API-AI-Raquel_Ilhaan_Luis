@@ -1,6 +1,10 @@
 from flask import Flask, render_template, request  # NOT the same as requests
 from gemini import get_songs
+from dotenv import load_dotenv
 
+
+# Load environment variables from .env file
+load_dotenv()
 app = Flask(__name__)
 
 @app.route('/')
