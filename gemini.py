@@ -1,4 +1,5 @@
 from google import genai
+from google.genai import types
 from pydantic import BaseModel
 import os
 from spotify_service import get_spotify_token, search_songs_on_spotify
