@@ -35,8 +35,6 @@ def get_songs(mood: str):
             "response_schema": list[Song], # calls the Song class from above to make sure response is structured correctly
         },
     )
-    print(response.text)
-
 
     songs: list[Song] = response.parsed
 
