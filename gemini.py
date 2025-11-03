@@ -1,50 +1,45 @@
-from google import genai
-from google.genai import types
-from pydantic import BaseModel
 import os
+import google.generativeai as genai
+from dotenv import load_dotenv
+
 from spotify_service import get_spotify_token, search_songs_on_spotify
 
-class Song(BaseModel): # creates a structure for geminis JSON response
-    title: str
-    artist: str
-    album: str
-    spotify_url: str
+load_dotenv()
 
+# Configure Gemini with your API key
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
-GOOGLE_API_KEY = os.environ.get('GEMINI_API_KEY')
-client = genai.Client(api_key=GOOGLE_API_KEY)
+def get_songs(mood):
+    try:
+        model = genai.GenerativeModel("gemini-pro")
+        prompt = f"Suggest five songs that match the mood: {mood}. Include title, artist, and album."
+        response = model.generate_content(prompt)
 
-def get_songs(mood: str):
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=f"""
-        You are Moodify. Recommend 5 songs based on the user's mood.
-        If the user specifies a genre, recommend 5 songs in that genre.
-        If not, choose a random genre based on the user's mood.
+        # Parse the response (assuming it's a list of song descriptions)
+        songs_data = response.text.split("\n")
+        token = get_spotify_token()
+        songs = []
 
-        For each song, include:
-        - title
-        - artist
-        - album
-        - spotify_url
+        for line in songs_data:
+            if line.strip():
+                # Basic parsing — you may need to adjust this based on Gemini's actual response format
+                parts = line.split(" - ")
+                if len(parts) >= 2:
+                    title = parts[0].strip()
+                    artist = parts[1].strip()
+                    album = parts[2].strip() if len(parts) > 2 else "Unknown"
+                    spotify_result = search_songs_on_spotify(title, artist, token)
+                    spotify_url = spotify_result[0]["external_url"] if spotify_result else None
 
-        User mood/genre: {mood}
-        """,
-        config={
-            "response_mime_type": "application/json", # Ensures gemini response is in JSON
-            "response_schema": list[Song], # calls the Song class from above to make sure response is structured correctly
-        },
-    )
+                    song = type("Song", (), {
+                        "title": title,
+                        "artist": artist,
+                        "album": album,
+                        "spotify_url": spotify_url
+                    })()
+                    songs.append(song)
 
-    songs: list[Song] = response.parsed
-
-    token = get_spotify_token() # get spotify token to search for songs
-    for song in songs:
-        results = search_songs_on_spotify(song.title, song.artist, token)
-        if results and results[0].get('external_url'):
-            song.spotify_url = results[0]['external_url']
-        else:
-            song.spotify_url = 'No spotify link found'
-
-
-    return songs
+        return songs
+    except Exception as e:
+        print(f"Error in get_songs: {e}")
+        return []

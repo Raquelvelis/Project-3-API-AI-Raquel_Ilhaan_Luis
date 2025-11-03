@@ -1,32 +1,37 @@
 <h5>Url's Provided By Spotify Api</h5>
 <div class="img">
-    <img src="{{ url_for('static', filename='spotify_logo_2.png') }}" alt=""> </div>
+    <img src="{{ url_for('static', filename='spotify_logo_2.png') }}" alt="">
+</div>
 
 <h1>Songs for your mood: {{ user_mood }}</h1>
 <h2>Here are your recommendations</h2>
 
-    <div class="grid">
-  {% for song in user_songs %}
-    <div class="card">
-      <h3>{{ song.title }}</h3>
-      <p><strong>Artist:</strong> {{ song.artist }}</p>
-      <p><em>Album:</em> {{ song.album }}</p>
-      {% if song.spotify_url %}
-      <p><a href="{{ song.spotify_url }}" target="_blank">Open in spotify?</a> </p>
+{% if user_songs %}
+  <div class="grid">
+    {% for song in user_songs %}
+      <div class="card">
+        <h3>{{ song.title }}</h3>
+        <p><strong>Artist:</strong> {{ song.artist }}</p>
+        <p><em>Album:</em> {{ song.album }}</p>
+        {% if song.spotify_url %}
+          <p><a href="{{ song.spotify_url }}" target="_blank">Open in spotify?</a></p>
         {% endif %}
-    </div>
-  {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No spotify link found</p>
+{% endif %}
 
 <h4>{{ text }}</h4>
-</div>
 
 <style>
   body {
     font-family: Arial, sans-serif;
     background: #000000;
     padding: 20px;
-    text-align: center; 
-    color:#f4f4f9
+    text-align: center;
+    color: #f4f4f9;
   }
   .grid {
     display: flex;
@@ -46,20 +51,19 @@
     transition: transform 0.2s ease;
   }
   .card:hover {
-    transform: scale(1.05); }
-
-    h3 {
-        font-size: 25px;
-    }
-    .img {
+    transform: scale(1.05);
+  }
+  h3 {
+    font-size: 25px;
+  }
+  .img {
     display: flex;
     justify-content: center;
     margin-bottom: 30px;
-    
-}
-.img img {
+  }
+  .img img {
     max-width: 250px;
     width: 100%;
     height: auto;
-}
+  }
 </style>
