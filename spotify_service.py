@@ -30,13 +30,6 @@ _SPOTIFY_SEARCH_URL = "https://api.spotify.com/v1/search"
 
 def get_spotify_token():
     """Get a Spotify access token using client id/secret from environment variables."""
-      """ Retrieve a Spotify access token using client credentials from environment variables.
-    Returns:
-        str: A valid Spotify access token.
-    Raises:
-        ValueError: If client ID or secret is missing.
-        RuntimeError: If the token request fails or token is missing in the response.
-    """
     client_id = os.getenv("SPOTIFY_CLIENT_ID")
     client_secret = os.getenv("SPOTIFY_CLIENT_SECRET")
 
@@ -76,7 +69,7 @@ def search_songs_on_spotify(title, artist, token, limit=5):
         "type": "track",
         "limit": str(limit),
     }
-# Send request to Spotify search endpoint
+
     resp = requests.get(_SPOTIFY_SEARCH_URL, headers=headers, params=params)
 
     if resp.status_code != 200:
